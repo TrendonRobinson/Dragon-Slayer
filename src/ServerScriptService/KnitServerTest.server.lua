@@ -1,4 +1,4 @@
-local Knit = require(game:GetService("ReplicatedStorage").Test.Knit)
+local Knit = require(game:GetService("ReplicatedStorage").Packages.Knit)
 
 local MyService = Knit.CreateService {
 	Name = "MyService";
