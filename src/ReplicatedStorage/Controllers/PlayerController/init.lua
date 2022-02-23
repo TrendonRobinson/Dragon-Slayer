@@ -14,11 +14,11 @@ local Controls = require(script.Controls).new()
 
 function PlayerController:KnitStart()
     -- // Knit Services
-    -- local TestService = Knit.GetService("TestService")
+    local PlayerService = Knit.GetService("PlayerManagerService")
 
 
     --// Client Action
-    Controls:init()
+    Controls:init(PlayerService)
 
 
 end

@@ -104,7 +104,6 @@ local function playerInput(actionName, inputState, inputObject)
 	if actionName == 'MouseMovement' then
 		if inputState == Enum.UserInputState.Change then
 			if RightDown then
-				print('whats up')
 				UserInputService.MouseBehavior = MouseBehavior.LockCurrentPosition
 				trackRotation(inputObject)
 			elseif inputState == Enum.UserInputState.Change and mouseLocked then

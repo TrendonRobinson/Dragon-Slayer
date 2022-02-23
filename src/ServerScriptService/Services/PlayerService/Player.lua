@@ -1,8 +1,10 @@
 --// Services
 local Players = game:GetService('Players')
+local ServerScriptService = game:GetService("ServerScriptService")
 
 --// Modules
 local ProfileService = require(script.Parent.ProfileService)
+local RaycastHitbox = require(ServerScriptService.Modules.RaycastHitboxV4)
 
 --// Variables
 local ProfileTemplate = {
@@ -35,7 +37,36 @@ function PlayerManager.new(_Player)
     return self
 end
 
+function PlayerManager:HitboxManager()
+
+    local Params = RaycastParams.new()
+    Params.FilterDescendantsInstances = {self.Character} --- remember to define our character!
+    Params.FilterType = Enum.RaycastFilterType.Blacklist
+
+    self.Hitbox.RaycastParams = Params
+
+    self.Hitbox.OnHit:Connect(function(hit, humanoid)
+        humanoid:TakeDamage(60)
+    end)
+end
+
+function PlayerManager:ToggleHitbox(on)
+    if on then
+        self.Hitbox:HitStart()
+        print('active')
+    else 
+        self.Hitbox:HitStop()
+    end
+end
+
 function PlayerManager:Init()
+
+    task.spawn(function()
+        self.Character = self.Player.Character or self.Player.CharacterAdded:Wait()
+        self.Sword = self.Character:WaitForChild('Sword')
+        self.Hitbox = RaycastHitbox.new(self.Sword)
+        self:HitboxManager()
+    end)
     
     local profile = ProfileStore:LoadProfileAsync("Player_" .. self.Player.UserId)
     if profile ~= nil then

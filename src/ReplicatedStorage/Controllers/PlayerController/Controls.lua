@@ -1,6 +1,6 @@
-
 ------------------------------------------------------------------------------
 local ReplicatedStorage = game:GetService('ReplicatedStorage')
+local ServerScriptService = game:GetService("ServerScriptService")
 local ContextActionService = game:GetService('ContextActionService')
 
 local Animations = ReplicatedStorage.Animations
@@ -37,9 +37,7 @@ end
 
 
 
-function PlayerControls:init()
-	print('init', self)
-	
+function PlayerControls:init(PlayerService)
 	local function playerInput(actionName, inputState, inputObject)
 		if inputState == Enum.UserInputState.Begin and actionName == 'Swing' and self.canAttack then
 			self.attackCount = self.attackCount == self.maxAttackCount and 1 or self.attackCount
@@ -47,7 +45,7 @@ function PlayerControls:init()
 			self.canAttack = false
 			self.canEvade = false
 			
-			-- Events.Attack:FireServer()
+			PlayerService.onAttack:Fire(true)
 			
 
 			local currentAnimation = SwordSwings[actionName..self.attackCount]
@@ -60,6 +58,8 @@ function PlayerControls:init()
 			self.attackCount += 1
 			self.canAttack = true
 			self.canEvade = true
+
+			PlayerService.onAttack:Fire(false)
 		elseif actionName == 'Evade' and self.canEvade then
 			if inputState == Enum.UserInputState.Begin then
 

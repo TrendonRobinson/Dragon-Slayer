@@ -21,7 +21,6 @@ end
 for _, v in ipairs(ReplicatedStorage.Components:GetDescendants()) do
 	if v:IsA("ModuleScript") then
 		local vModule = require(v)
-		Component.new(vModule.Tag, vModule)
 	end
 end
 
