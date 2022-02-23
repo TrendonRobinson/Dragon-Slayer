@@ -65,4 +65,4 @@ function EnemyService:KnitInit()
 
 end 
 
-return EnemyService
+return EnemyServicegi
