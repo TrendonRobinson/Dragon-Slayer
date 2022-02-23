@@ -131,7 +131,6 @@ local function playerInput(actionName, inputState, inputObject)
 end
 
 ContextActionService:BindAction("MouseMovement", playerInput, false, Enum.UserInputType.MouseMovement, Enum.UserInputType.Touch)
--- ContextActionService:BindAction("LockSwitchRotation", playerInput, false, Enum.UserInputType.MouseMovement, Enum.UserInputType.Touch)
 ContextActionService:BindAction("SwitchOffset", playerInput, false, Enum.KeyCode.Q, Enum.KeyCode.ButtonR1)
 ContextActionService:BindAction("LockSwitch", playerInput, false, Enum.KeyCode.LeftShift)
 UserInputService.InputChanged:Connect(trackZoom)
