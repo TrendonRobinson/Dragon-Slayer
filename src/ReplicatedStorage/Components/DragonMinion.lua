@@ -22,9 +22,9 @@ function Dragon:DeathInit()
     local Humanoid = self.Humanoid
     local Connection
     
-    self.Instance.HumanoidRootPart.Anchored = true
-
+    
     Connection = Humanoid.Died:Connect(function()
+        self.Instance.HumanoidRootPart.Anchored = true
         local DeathAnim = Humanoid:LoadAnimation(Animations.Death)
         DeathAnim:Play()
         DeathAnim.Stopped:Connect(function()
@@ -35,19 +35,9 @@ function Dragon:DeathInit()
     end)
 end
 
-function Dragon:TrackHealth()
-    local Health = self.Instance.HealthGUI
-    self.Humanoid:GetPropertyChangedSignal('Health'):Connect(function()
-        Health.Frame.Bar.Size = UDim2.fromScale(
-            self.Humanoid.Health/self.Humanoid.MaxHealth,
-            1
-        )
-    end)
-end
 
 function Dragon:Start()
     self.Humanoid = self.Instance.Humanoid
-    self:TrackHealth()
     self:DeathInit()
 end
 

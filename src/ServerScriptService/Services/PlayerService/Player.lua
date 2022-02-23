@@ -53,7 +53,6 @@ end
 function PlayerManager:ToggleHitbox(on)
     if on then
         self.Hitbox:HitStart()
-        print('active')
     else 
         self.Hitbox:HitStop()
     end

@@ -18,13 +18,14 @@ function Dragon:Construct()
     self._trove = Trove.new()
 end
 
+
 function Dragon:DeathInit()
     local Humanoid = self.Humanoid
     local Connection
     
-    self.Instance.HumanoidRootPart.Anchored = true
-
+    
     Connection = Humanoid.Died:Connect(function()
+        self.Instance.HumanoidRootPart.Anchored = true
         local DeathAnim = Humanoid:LoadAnimation(Animations.Death)
         DeathAnim:Play()
         DeathAnim.Stopped:Connect(function()
@@ -47,7 +48,7 @@ end
 
 function Dragon:Start()
     self.Humanoid = self.Instance.Humanoid
-    self:TrackHealth()
+    -- self:TrackHealth()
     self:DeathInit()
 end
 
