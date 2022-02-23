@@ -40,7 +40,7 @@ function Enemy:TrackHealth()
         )
     end)
 end
-
+print('it works')
 function Enemy:PrepGui()
     self.GUI = UI:Clone()
     self.GUI.Level.Text = 'LV.'..self.Instance:GetAttribute('Level').." "..self.Instance:GetAttribute('Name')

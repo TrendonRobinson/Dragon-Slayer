@@ -9,7 +9,7 @@ local RaycastHitbox = require(ServerScriptService.Modules.RaycastHitboxV4)
 --// Variables
 local ProfileTemplate = {
     --// Stats
-    lvl = 0,
+    lvl = 1,
     xp = 0,
 
     strength = 0,
