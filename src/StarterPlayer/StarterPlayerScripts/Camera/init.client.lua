@@ -13,7 +13,6 @@ local CF = CFrame.new
 local CFAngles = CFrame.Angles
 
 --//  Necessities
-
 local Player = game.Players.LocalPlayer
 local Character = Player.Character or Player.CharacterAdded:Wait()
 local Humanoid = Character:WaitForChild('Humanoid')
