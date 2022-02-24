@@ -193,7 +193,7 @@ function Enemy:Patrol()
 end
 
 function Enemy:Died()
-	self:Destroy()
+	self:Stop()
 end
 
 function Enemy:Start()
@@ -210,6 +210,7 @@ function Enemy:Start()
 	self.attacking = false
 
 	self.Humanoid.Died:Connect(function()
+		task.wait(6.1)
 		self:Died()
 	end)
     self:Patrol()
@@ -219,6 +220,9 @@ end
 
 function Enemy:Stop()
     self.trove:Destroy()
+	local s, e = pcall(function()
+        self.Instance:Destroy()
+    end)
 end
 
 return Enemy

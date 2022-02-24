@@ -90,9 +90,9 @@ end
 
 function Enemy:Stop()
     self._trove:Destroy()
-    local s, e = pcall(function()
-        self.Instance:Destroy()
-    end)
+    -- local s, e = pcall(function()
+    --     self.Instance:Destroy()
+    -- end)
 end
 
 return Enemy
