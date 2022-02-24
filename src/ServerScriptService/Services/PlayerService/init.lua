@@ -12,6 +12,7 @@ local PlayerService = Knit.CreateService { Name = "PlayerManagerService", Client
 local Client = PlayerService.Client
 
 Client.onAttack = Knit.CreateSignal()
+Client.constructHitbox = Knit.CreateSignal()
 
 --// Client Methods
 function PlayerService.Client:GetTest(player)
@@ -39,6 +40,11 @@ function PlayerService:KnitStart()
     Client.onAttack:Connect(function(Player, on)
         local Profile = Profiles[Player]
         Profile:ToggleHitbox(on)
+    end)
+
+    Client.constructHitbox:Connect(function(Player)
+        local Profile = Profiles[Player]
+        Profile:ConstructHitbox()
     end)
 	
 end 

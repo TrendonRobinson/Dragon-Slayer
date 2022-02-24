@@ -49,6 +49,12 @@ function PlayerManager:HitboxManager()
         humanoid:TakeDamage(60)
     end)
 end
+function PlayerManager:ConstructHitbox()
+    self.Character = self.Player.Character or self.Player.CharacterAdded:Wait()
+    self.Sword = self.Character:WaitForChild('Sword')
+    self.Hitbox = RaycastHitbox.new(self.Sword)
+    self:HitboxManager()
+end
 
 function PlayerManager:ToggleHitbox(on)
     if on then
@@ -60,13 +66,6 @@ end
 
 function PlayerManager:Init()
 
-    task.spawn(function()
-        self.Character = self.Player.Character or self.Player.CharacterAdded:Wait()
-        self.Sword = self.Character:WaitForChild('Sword')
-        self.Hitbox = RaycastHitbox.new(self.Sword)
-        self:HitboxManager()
-    end)
-    
     local profile = ProfileStore:LoadProfileAsync("Player_" .. self.Player.UserId)
     if profile ~= nil then
         profile:AddUserId(self.Player.UserId) -- GDPR compliance
@@ -88,6 +87,8 @@ function PlayerManager:Init()
         --   Roblox servers trying to load this profile at the same time:
         self.Player:Kick() 
     end
+
+    self:ConstructHitbox()
 
 end
 

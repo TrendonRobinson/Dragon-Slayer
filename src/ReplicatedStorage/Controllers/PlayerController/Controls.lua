@@ -13,14 +13,14 @@ PlayerControls.__index = PlayerControls
 function PlayerControls.new()
 	
 	local Player = game.Players.LocalPlayer
-	local Character = Player.Character or Player.CharacterAdded:Wait()
+	Player.CharacterAdded:Wait()
 
 	local info = {}
 	setmetatable(info, PlayerControls)
 	
 	info.Player = Player
-	info.Character = Character
-	info.Humanoid = Character:WaitForChild('Humanoid')
+	info.Character = Player.Character
+	info.Humanoid = Player.Character:WaitForChild('Humanoid')
 
 	info.canAttack = true
 	info.canEvade = true
@@ -37,7 +37,14 @@ end
 
 
 
-function PlayerControls:init(PlayerService)
+function PlayerControls:init(PlayerService, Character)
+	if Character then
+		self.Character = Character
+		self.Humanoid = self.Character:WaitForChild('Humanoid')
+	end
+
+	PlayerService.constructHitbox:Fire()
+	
 	local function playerInput(actionName, inputState, inputObject)
 		if inputState == Enum.UserInputState.Begin and actionName == 'Swing' and self.canAttack then
 			self.attackCount = self.attackCount == self.maxAttackCount and 1 or self.attackCount
