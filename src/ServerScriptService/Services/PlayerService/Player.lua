@@ -12,8 +12,8 @@ local ProfileTemplate = {
     lvl = 1,
     xp = 0,
 
-    strength = 0,
-    speed = 0,
+    strength = 1,
+    speed = 1,
 }
 
 local ProfileStore = ProfileService.GetProfileStore(
@@ -46,11 +46,12 @@ function PlayerManager:HitboxManager()
     self.Hitbox.RaycastParams = Params
 
     self.Hitbox.OnHit:Connect(function(hit, humanoid)
-        humanoid:TakeDamage(20)
+        humanoid:TakeDamage(200)
     end)
 end
 function PlayerManager:ConstructHitbox()
     self.Character = self.Player.Character or self.Player.CharacterAdded:Wait()
+    self.Character.Humanoid.WalkSpeed = 50
     self.Sword = self.Character:WaitForChild('Sword')
     self.Hitbox = RaycastHitbox.new(self.Sword)
     self:HitboxManager()

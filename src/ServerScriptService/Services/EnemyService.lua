@@ -18,18 +18,39 @@ end
 --// Variables
 local Assets = ReplicatedStorage.Assets.Enemies
 
+local console = {
+    log = print
+}
+
+local EnemyMarkers = workspace.EnemyMarkers
+local EnemyCount = #EnemyMarkers:GetChildren()
+local DeathCount = Instance.new("NumberValue")
+
 local Enemies = Instance.new("Folder")
 Enemies.Parent = workspace
 
 --// Knit Start&Init
 function EnemyService:KnitStart()
-	local EnemyMarkers = workspace.EnemyMarkers
+	
     local Element = EnemyMarkers:GetAttribute('Type')
 
+    DeathCount.Changed:Connect(function(value)
+        console.log(DeathCount.Value..'/'..EnemyCount)
+    end)
+    
+
     for _, marker in pairs(EnemyMarkers:GetChildren()) do
+        local Connect
         local Dragon = Assets[Element][Element..marker.Name]:Clone()
         Dragon:SetPrimaryPartCFrame(marker.CFrame)
         Dragon.Parent = Enemies
+
+        Connect = Dragon.Humanoid.Died:Connect(function()
+            DeathCount.Value += 1
+            Connect:Disconnect()
+        end)
+
+        marker.Transparency = 1
     end
 end 
 
