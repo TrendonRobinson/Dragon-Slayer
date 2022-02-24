@@ -76,6 +76,7 @@ function PlayerManager:HitboxManager()
 end
 function PlayerManager:ConstructHitbox()
     self.Character = self.Player.Character or self.Player.CharacterAdded:Wait()
+    self.Character.Humanoid.WalkSpeed = 50
     self.Sword = self.Character:WaitForChild('Sword')
     self.Hitbox = RaycastHitbox.new(self.Sword)
     self:HitboxManager()
