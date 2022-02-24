@@ -46,7 +46,7 @@ function PlayerManager:HitboxManager()
     self.Hitbox.RaycastParams = Params
 
     self.Hitbox.OnHit:Connect(function(hit, humanoid)
-        humanoid:TakeDamage(60)
+        humanoid:TakeDamage(20)
     end)
 end
 function PlayerManager:ConstructHitbox()

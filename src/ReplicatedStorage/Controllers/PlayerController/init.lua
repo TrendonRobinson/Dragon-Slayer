@@ -17,6 +17,7 @@ function PlayerController:KnitStart()
     --// Variables
     local Player = game.Players.LocalPlayer
     local Character = Player.Character or Player.CharacterAdded:Wait()
+    local CameraScript = script.Camera:Clone()
 
     -- // Knit Services
     local PlayerService = Knit.GetService("PlayerManagerService")
@@ -26,7 +27,14 @@ function PlayerController:KnitStart()
     --// Client Action
     Controls:init(PlayerService)
 
+    CameraScript.Parent = Character
+    CameraScript.Disabled = false
+
     Player.CharacterAdded:Connect(function(Character)
+        local CameraScript = script.Camera:Clone()
+        CameraScript.Parent = Character
+        CameraScript.Disabled = false
+        
         Controls:init(PlayerService, Character)
     end)
 

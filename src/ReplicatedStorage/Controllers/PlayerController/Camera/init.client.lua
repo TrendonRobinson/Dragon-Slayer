@@ -146,7 +146,7 @@ Connection = RunService.RenderStepped:Connect(function(dt)
 
 	local raycastParams = RaycastParams.new()
 	raycastParams.FilterType = Enum.RaycastFilterType.Blacklist
-	raycastParams.FilterDescendantsInstances = {Character:GetDescendants(), workspace:FindFirstChild('Debris')}
+	raycastParams.FilterDescendantsInstances = {workspace.Enemies:GetDescendants(), Character:GetDescendants(), workspace:FindFirstChild('Debris')}
 	raycastParams.IgnoreWater = true
 
 	-- Cast the ray
