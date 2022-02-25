@@ -1,6 +1,7 @@
 --// Services
 local Players = game:GetService('Players')
 local ServerScriptService = game:GetService("ServerScriptService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 --// Modules
 local Knit = require(game:GetService("ReplicatedStorage").Packages.Knit)
@@ -14,6 +15,8 @@ local ProfileTemplate = {
     xp = 0,
 
     coins = 0,
+
+    inventory = {},
 
     strength = 1,
     speed = 1,
@@ -43,7 +46,7 @@ end
 
 --HITBOX------------------------------------------------------------------------------------
 function PlayerManager:HitboxManager()
-
+    local PlayerManagerService = Knit.GetService('PlayerManagerService')
     local Params = RaycastParams.new()
     Params.FilterDescendantsInstances = {self.Character} --- remember to define our character!
     Params.FilterType = Enum.RaycastFilterType.Blacklist
@@ -56,11 +59,13 @@ function PlayerManager:HitboxManager()
         local Type = humanoid.Parent:GetAttribute('Type')
         local Level = humanoid.Parent:GetAttribute('Level')
 
-        humanoid:TakeDamage(self.profile.Data.strength * 10)
+        humanoid:TakeDamage(self.profile.Data.strength * 300)
         
         if humanoid.Health < 1 then
-            self:IncrementCoins(Gold)
+            PlayerManagerService.Client.renderCoins:Fire(self.Player, Gold, humanoid.Parent.PrimaryPart.Position)
+            self:IncrementCoins(Gold or 0)
             self:IncrementXP(Level * 100 * .25)
+            if Type == 'DragonBoss' then self:TriggerDropChance() end
         end
     end)
 end
@@ -80,12 +85,67 @@ function PlayerManager:ToggleHitbox(on)
 end
 --HITBOX------------------------------------------------------------------------------------
 
+--DROP CHANCE------------------------------------------------------------------------------------
+function PlayerManager:TriggerDropChance()
+
+end
+--DROP CHANCE------------------------------------------------------------------------------------
+
+--INVENTORY-----------------------------------------------------------------------------------
+function PlayerManager:MonitorCharacter()
+    local Character = self.Player.Character or self.Player.CharacterAdded:Wait()
+    
+    Character.ChildAdded:Connect(function(Object)
+        if Object:GetAttribute('Weapon') then
+            self:ConstructHitbox()
+        end
+    end)
+
+    self.Player.CharacterAdded:Connect(function()
+        self:MonitorCharacter()
+    end)
+end
+function PlayerManager:AddWeaponToInventory(weaponName)
+    if self.profile.Data.inventory[weaponName] then
+        self.profile.Data.inventory[weaponName] += 1
+    else
+        self.profile.Data.inventory[weaponName] = 1
+    end
+    print(weaponName)
+end
+
+function PlayerManager:EquipSword(weaponName)
+    if not ReplicatedStorage.Assets.Swords.Weapon:FindFirstChild(weaponName) then
+        error('Weapon name does not exist in weapon database')
+    elseif not self.profile.Data.inventory[weaponName] then
+        error('Player does not own weapon')
+    end
+    local SwordClone = ReplicatedStorage.Assets.Swords.Weapon[weaponName]:Clone()
+    SwordClone.Name = 'Sword'
+
+    local Character = self.Player.Character
+    local RightHand = Character.RightHand
+    local PivotOffset = SwordClone.PivotOffset
+    
+    Character:FindFirstChild('Sword'):Destroy()
+    RightHand:FindFirstChild('Weld'):Destroy()
+
+    local Weld = Instance.new('Weld')
+    Weld.Part0 = SwordClone
+    Weld.Part1 = RightHand
+    Weld.C0 = CFrame.new(PivotOffset.X, PivotOffset.Y, PivotOffset.Z) * CFrame.fromEulerAnglesXYZ(math.pi/2, 0, 0)
+    Weld.Parent = RightHand
+    
+    SwordClone.Parent = Character
+end
+--INVENTORY------------------------------------------------------------------------------------
+
 --DATA INCREMENT------------------------------------------------------------------------------------
 function PlayerManager:IncrementCoins(amount)
     if amount then
         self.profile.Data['coins'] += amount
     else
-        warn('PlayerManagerService: PlayerManager:IncrementCoins(amount) -> amount is nil')
+        warn('PlayerManagerService: PlayerManager:IncrementCoins(amount) -> amount is nil; No gold was earned.')
     end
 end
 
@@ -99,8 +159,9 @@ end
 --DATA INCREMENT------------------------------------------------------------------------------------
 function PlayerManager:Init()
 
+    --Player_572995537
     --Player__572995537
-    local profile = ProfileStore:LoadProfileAsync("Player__" .. self.Player.UserId)
+    local profile = ProfileStore:LoadProfileAsync("Player_" .. self.Player.UserId)
     if profile ~= nil then
         profile:AddUserId(self.Player.UserId) -- GDPR compliance
         profile:Reconcile() -- Fill in missing variables from ProfileTemplate (optional)
@@ -123,6 +184,7 @@ function PlayerManager:Init()
     end
 
     self:ConstructHitbox()
+    self:MonitorCharacter()
 
 end
 

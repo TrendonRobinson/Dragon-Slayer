@@ -11,13 +11,11 @@ local PlayerController = Knit.CreateController { Name = "PlayerController" }
 --// Modules
 local Controls = require(script.Controls).new()
 
-
-
 function PlayerController:KnitStart()
     --// Variables
     local Player = game.Players.LocalPlayer
     local Character = Player.Character or Player.CharacterAdded:Wait()
-    local CameraScript = script.Camera:Clone()
+    
 
     -- // Knit Services
     local PlayerService = Knit.GetService("PlayerManagerService")
@@ -27,16 +25,32 @@ function PlayerController:KnitStart()
     --// Client Action
     Controls:init(PlayerService)
 
-    CameraScript.Parent = Character
-    CameraScript.Disabled = false
+    
+    
+    --// Functions
+    local function SwordAdded(Object)
+        if Object:GetAttribute('Weapon') then
+            
+        end
+    end
 
-    Player.CharacterAdded:Connect(function(Character)
+    local function AddCamera(Character)
         local CameraScript = script.Camera:Clone()
         CameraScript.Parent = Character
         CameraScript.Disabled = false
-        
+    end
+
+
+    AddCamera(Character)
+    Character.ChildAdded:Connect(SwordAdded)
+
+
+    Player.CharacterAdded:Connect(function(Character)
+        AddCamera(Character)
         Controls:init(PlayerService, Character)
+        Character.ChildAdded:Connect(SwordAdded)
     end)
+
 
 
 end

@@ -12,18 +12,40 @@ local PlayerService = Knit.CreateService { Name = "PlayerManagerService", Client
 local Client = PlayerService.Client
 
 Client.onAttack = Knit.CreateSignal()
+Client.renderCoins = Knit.CreateSignal()
 Client.constructHitbox = Knit.CreateSignal()
-
---// Client Methods
-function PlayerService:GetTest(player)
-	
-end
 
 --// Variables
 
 -- Tables/Dictionaries
 local Profiles = {}
 
+--// Client Methods
+function PlayerService.Client:GetWeapons(player)
+	return Profiles[player].profile.Data.inventory
+end
+
+function PlayerService.Client:GetCoins(player)
+	return Profiles[player].profile.Data.coins
+end
+
+function PlayerService.Client:EquipSword(player, weaponName)
+	Profiles[player]:EquipSword(weaponName)
+end
+
+--// Methods
+function PlayerService:GetTest(player)
+	
+end
+
+function PlayerService:AddSwordToInventory(player, weaponName)
+    Profiles[player]:AddWeaponToInventory(weaponName)
+end
+
+
+function PlayerService:EquipSword(player, weaponName)
+    Profiles[player]:EquipSword(weaponName)
+end
 
 --// Profile Management
 Players.PlayerAdded:Connect(function(Player)

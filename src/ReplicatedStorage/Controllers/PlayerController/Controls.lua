@@ -34,7 +34,9 @@ end
 ------------------------------------------------------------------------------
 
 
-
+function PlayerControls:NewSword(PlayerService)
+	PlayerService.constructHitbox:Fire()
+end
 
 
 function PlayerControls:init(PlayerService, Character)

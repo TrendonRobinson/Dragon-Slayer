@@ -157,8 +157,7 @@ function Enemy:ChaseTarget(TargetEnemy, Position)
 	if Nearest then
 
 		local Distance = Nearest:DistanceFromCharacter(Position)
-
-		if Distance < 5 then
+		if Distance < self.HITBOX_SIZE.Magnitude*.75 then
 			self:Attack()
 		elseif Distance < self.ATTACK_RADIUS then
 			self:ChaseTarget(TargetEnemy, self.Instance.PrimaryPart.Position)
@@ -199,7 +198,6 @@ function Enemy:ServicePrep()
 	self.Services = {
 		PlayerManagerService = Knit.GetService('PlayerManagerService')
 	}
-	print(self.Services.PlayerManagerService)
 end
 
 function Enemy:Start()
@@ -212,7 +210,7 @@ function Enemy:Start()
 	self.ATTACK_DAMAGE = self.Instance:GetAttribute('Level') * 10
 	self.ATTACK_STAND_TIME = 1
 	self.ATTACK_RADIUS = 25
-	self.HEALTH = self.Instance:GetAttribute('Level')
+	self.HEALTH = math.ceil(100 * math.sqrt(self.Instance:GetAttribute('Level')))
 
 	self.attacking = false
 	self.Humanoid.MaxHealth = self.HEALTH
