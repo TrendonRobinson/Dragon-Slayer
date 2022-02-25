@@ -38,10 +38,10 @@ local OffsetCount = 2
 local OffsetRight = true
 Offset.Value = OffsetCount
 
-Camera.DiagonalFieldOfView = 41.838
-Camera.FieldOfView = 60--44.19
-Camera.FieldOfViewMode = Enum.FieldOfViewMode.Vertical
-Camera.MaxAxisFieldOfView = 50
+-- Camera.DiagonalFieldOfView = 41.838
+-- Camera.FieldOfView = 60--44.19
+-- Camera.FieldOfViewMode = Enum.FieldOfViewMode.Vertical
+-- Camera.MaxAxisFieldOfView = 50
 
 local TargetCF = CF((CF(Root.CFrame.Position) * CF(0, 0, 12)).Position, Root.Position)
 local spring = springmodule.new(Camera.CFrame.Position, Vector3.new(), TargetCF.Position)

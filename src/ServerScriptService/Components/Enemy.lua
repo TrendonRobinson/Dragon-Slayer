@@ -86,14 +86,9 @@ function Enemy:isInstaceAttackable(targetInstance)
 	return isAttackable
 end
 
-function Enemy:Attack()
-	self.attacking = true
-	self.lastAttackTime = tick()
-
-	local originalWalkSpeed = self.Humanoid.WalkSpeed
-	self.Humanoid.WalkSpeed = 0
-
-	self.attackAnimation:Play()
+function Enemy:FireBreath(selection)
+	print(selection, self.attackAnimations)
+	self.attackAnimations[selection]:Play()
 
 	task.wait(.8)
 
@@ -114,6 +109,60 @@ function Enemy:Attack()
 	
 	hitPart:Destroy()
 
+	return hitTouchingParts
+end
+
+function Enemy:WingBeat(selection)
+	self.attackAnimations[selection]:Play()
+	self.currentAnimationTrack = self.wingBeatAnimation
+
+	task.wait(.8)
+
+	local hitPart = Instance.new("Part")
+	hitPart.Size = self.HITBOX_SIZE/2
+	hitPart.Transparency = 1
+	hitPart.CanCollide = false
+	hitPart.Anchored = true
+	hitPart.CFrame = self.Instance.HumanoidRootPart.CFrame * CFrame.new(0, 0, -self.HITBOX_SIZE.Z*.5)
+	
+	hitPart.Parent = workspace
+
+	task.wait(.2)
+
+	local hitTouchingParts = workspace:GetPartsInPart(hitPart)
+
+	-- Destroy the hitPart before it results in physics updates on touched parts
+	
+	hitPart:Destroy()
+
+	return hitTouchingParts
+end
+
+function Enemy:AnimationStopped()
+	for i, track in pairs(self.attackAnimations) do
+		self.trove:Connect(track.Stopped, function()
+
+			self.Humanoid.WalkSpeed = self.originalWalkSpeed
+			self.startPosition = self.Instance.PrimaryPart.Position
+			self.attacking = false
+			if not self:NearByPlayer() then self:Patrol() end
+		end)
+	end
+end
+
+function Enemy:Attack(selection)
+	self.attacking = true
+	self.lastAttackTime = tick()
+
+	local hitTouchingParts
+	self.Humanoid.WalkSpeed = 0
+	
+	if selection == 1 then
+		hitTouchingParts = self:WingBeat(selection)
+	else
+		hitTouchingParts = self:FireBreath(selection)
+	end
+
 	-- Find humanoids to damage
 	local attackedHumanoids	= {}
 	for _, part in pairs(hitTouchingParts) do
@@ -127,13 +176,9 @@ function Enemy:Attack()
 		humanoid:TakeDamage(self.ATTACK_DAMAGE)
 	end
 
-	self.trove:Connect(self.attackAnimation.Stopped, function()
 
-		self.Humanoid.WalkSpeed = originalWalkSpeed
-		self.startPosition = self.Instance.PrimaryPart.Position
-		self.attacking = false
-		if not self:NearByPlayer() then self:Patrol() end
-	end)
+	task.wait(1.5)
+	if not self:NearByPlayer() then self:Patrol() end
 end
 
 function Enemy:FindNearestPlayer(position)
@@ -161,7 +206,7 @@ function Enemy:ChaseTarget(TargetEnemy, Position)
 
 		local Distance = Nearest:DistanceFromCharacter(Position)
 		if Distance < self.HITBOX_SIZE.Magnitude*.75 then
-			self:Attack()
+			self:Attack(math.random(1, 2))
 		elseif Distance < self.ATTACK_RADIUS then
 			self:ChaseTarget(TargetEnemy, self.Instance.PrimaryPart.Position)
 		end
@@ -235,7 +280,12 @@ end
 function Enemy:Start()
 	local Type = self.Instance:GetAttribute('Type')
     self.Humanoid = self.Instance.Humanoid
-	self.attackAnimation = self.Humanoid:LoadAnimation(ReplicatedStorage.Animations[Type]['WingBeat'])
+	self.attackAnimations = {
+		self.Humanoid:LoadAnimation(ReplicatedStorage.Animations[Type]['FireBreath']),
+		self.Humanoid:LoadAnimation(ReplicatedStorage.Animations[Type]['WingBeat'])
+	}
+
+	self.originalWalkSpeed = self.Humanoid.WalkSpeed
 	self.startPosition = self.Instance.PrimaryPart.Position
 
 	self.HITBOX_SIZE = self.Instance:GetExtentsSize()
@@ -250,6 +300,7 @@ function Enemy:Start()
 	
 	task.spawn(function()
 		self:ServicePrep()
+		self:AnimationStopped()
 	end)
 
 	self.Humanoid.Died:Connect(function()
