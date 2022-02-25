@@ -241,6 +241,7 @@ end
 
 function Enemy:Died()
 	self:Stop()
+<<<<<<< HEAD
 end
 
 function Enemy:ServicePrep()
@@ -276,6 +277,8 @@ function Enemy:WeaponDrop()
 		end
 
 		SwordDrop.Parent = workspace.Ignorable
+=======
+>>>>>>> 6887c98e3ea953328f8ec7f65d75d789f6e2ca4e
 end
 
 function Enemy:Start()
@@ -305,10 +308,13 @@ function Enemy:Start()
 	end)
 
 	self.Humanoid.Died:Connect(function()
+<<<<<<< HEAD
 		local chance = math.rad(1, 5)
 		if chance == 1 then
 			self:WeaponDrop()
 		end
+=======
+>>>>>>> 6887c98e3ea953328f8ec7f65d75d789f6e2ca4e
 		task.wait(6.1)
 		self:Died()
 	end)
