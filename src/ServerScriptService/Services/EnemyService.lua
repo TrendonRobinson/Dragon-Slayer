@@ -31,10 +31,17 @@ Enemies.Parent = workspace
 
 --// Knit Start&Init
 function EnemyService:KnitStart()
+
+    --// Services
+    local PlayerManagerService = Knit.GetService('PlayerManagerService')
 	
     local Element = EnemyMarkers:GetAttribute('Type')
 
     DeathCount.Changed:Connect(function(value)
+        PlayerManagerService.Client.renderDeathCount:FireAll(EnemyCount-DeathCount.Value)
+        if DeathCount.Value == EnemyCount then
+            PlayerManagerService:ConcludeGame()
+        end
         console.log(DeathCount.Value..'/'..EnemyCount)
     end)
     

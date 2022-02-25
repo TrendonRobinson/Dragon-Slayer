@@ -76,6 +76,11 @@ function PlayerManager:HitboxManager()
 end
 function PlayerManager:ConstructHitbox()
     self.Character = self.Player.Character or self.Player.CharacterAdded:Wait()
+
+    if not self.Character:FindFirstChild('Sword') then
+        self:EquipSword(self.profile.Data.equiped)
+    end
+
     self.Character.Humanoid.WalkSpeed = 50
     self.Sword = self.Character:WaitForChild('Sword')
     self.Hitbox = RaycastHitbox.new(self.Sword)
@@ -133,8 +138,12 @@ function PlayerManager:EquipSword(weaponName)
     local RightHand = Character.RightHand
     local PivotOffset = SwordClone.PivotOffset
     
-    Character:FindFirstChild('Sword'):Destroy()
-    RightHand:FindFirstChild('Weld'):Destroy()
+    if Character:FindFirstChild('Sword') then
+        Character.Sword:Destroy()
+    end
+    if RightHand:FindFirstChild('Weld') then
+    	RightHand.Weld:Destroy()
+	end
 
     local Weld = Instance.new('Weld')
     Weld.Part0 = SwordClone

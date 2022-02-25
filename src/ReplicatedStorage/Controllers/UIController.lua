@@ -10,7 +10,6 @@ local Knit = require(ReplicatedStorage.Packages.Knit)
 --// Knit Controllers
 local UIController = Knit.CreateController { Name = "UIController" }
 
-
 function UIController:KnitStart()
     --// Modules
     local Modules = Knit.Modules
@@ -27,6 +26,12 @@ function UIController:KnitStart()
 
     local Assets = game.ReplicatedStorage.Assets
 
+    -- Enemy Count
+    local Enemies = workspace:FindFirstChild('Enemies')
+    local EnemyMarkers = workspace:FindFirstChild('EnemyMarkers')
+    local EnemyCount = MainGui.EnemyCount
+    local EnemyCountLabel = EnemyCount.Label
+
     -- Inventory
     local Inventory = MainGui.Inventory
     local Toggle = Inventory.Toggle
@@ -38,8 +43,6 @@ function UIController:KnitStart()
     -- Coins
     local Coins = MainGui.Coins
     local CoinIcon = Coins.Coin
-    
-    
     local Coin = Assets.UI.Coin
 
     PlayerManagerService:GetCoins()
@@ -48,7 +51,15 @@ function UIController:KnitStart()
     end)
     :catch(warn)
 
+    --// Functions
+    local function RenderEnemyCount(Enemies)
+        EnemyCountLabel.Text = 'Enemies left: '..Enemies
+    end
+    
+
     --// Action
+    RenderEnemyCount(#EnemyMarkers:GetChildren(), EnemyCountLabel)
+
     Toggle.MouseButton1Click:Connect(function()
         local Active = not Slots.Visible
         Slots.Visible = Active
@@ -77,6 +88,10 @@ function UIController:KnitStart()
             
         end)
         :catch(warn)
+    end)
+
+    PlayerManagerService.renderDeathCount:Connect(function(Count)
+        RenderEnemyCount(Count, EnemyCountLabel)
     end)
 
 

@@ -196,6 +196,7 @@ function Enemy:FindNearestPlayer(position)
 end
 
 function Enemy:ChaseTarget(TargetEnemy, Position)
+	TargetEnemy.Character:WaitForChild('HumanoidRootPart')
 	self.Humanoid:MoveTo(TargetEnemy.Character.PrimaryPart.Position)
 
 	local Nearest = self:FindNearestPlayer(self.Instance.PrimaryPart.Position)
