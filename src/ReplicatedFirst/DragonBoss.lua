@@ -54,7 +54,6 @@ function Dragon:Patrol()
 end
 
 function Dragon:Start()
-    print('Dragon Boss Started')
     self.Humanoid = self.Instance.Humanoid
     self.Focal = self.Instance.PrimaryPart.Position
     self:Patrol()

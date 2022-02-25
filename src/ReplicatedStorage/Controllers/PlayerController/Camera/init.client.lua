@@ -13,6 +13,7 @@ local CF = CFrame.new
 local CFAngles = CFrame.Angles
 
 --//  Necessities
+local Ignorable = workspace:FindFirstChild('Ignorable') or error("Camera Script: Create 'Ignorable' folder in workspace")--or Instance.new("Folder", workspace); Ignorable.Name = 'Ignorable'
 local Player = game.Players.LocalPlayer
 local Character = Player.Character or Player.CharacterAdded:Wait()
 local Humanoid = Character:WaitForChild('Humanoid')
@@ -146,7 +147,12 @@ Connection = RunService.RenderStepped:Connect(function(dt)
 
 	local raycastParams = RaycastParams.new()
 	raycastParams.FilterType = Enum.RaycastFilterType.Blacklist
-	raycastParams.FilterDescendantsInstances = {workspace.Enemies:GetDescendants(), Character:GetDescendants(), workspace:FindFirstChild('Debris')}
+	raycastParams.FilterDescendantsInstances = {
+		Character:GetDescendants(), 
+		Ignorable:GetDescendants(),
+		workspace.Enemies:GetDescendants(), 
+		workspace:FindFirstChild('Debris'),
+	}
 	raycastParams.IgnoreWater = true
 
 	-- Cast the ray

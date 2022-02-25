@@ -28,28 +28,20 @@ function PlayerController:KnitStart()
     
     
     --// Functions
-    local function SwordAdded(Object)
-        if Object:GetAttribute('Weapon') then
-            
-        end
-    end
-
     local function AddCamera(Character)
         local CameraScript = script.Camera:Clone()
         CameraScript.Parent = Character
         CameraScript.Disabled = false
     end
 
-
-    AddCamera(Character)
-    Character.ChildAdded:Connect(SwordAdded)
-
-
-    Player.CharacterAdded:Connect(function(Character)
+    local function CharacterAdded(Character)
         AddCamera(Character)
         Controls:init(PlayerService, Character)
-        Character.ChildAdded:Connect(SwordAdded)
-    end)
+    end
+
+
+    AddCamera(Character)
+    Player.CharacterAdded:Connect(CharacterAdded)
 
 
 

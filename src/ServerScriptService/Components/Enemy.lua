@@ -15,6 +15,9 @@ local Tag = "Enemy"
 local Enemy = Component.new({Tag = Tag})
 
 --// Variables
+local Assets = ReplicatedStorage.Assets
+local Drops = Assets.Swords.Drops
+
 function PartToRegion3(obj)
 	local abs = math.abs
 
@@ -37,7 +40,7 @@ function PartToRegion3(obj)
 	local maxx = x + wsx
 	local maxy = y + wsy
 	local maxz = z + wsz
-   
+
 	local minv, maxv = Vector3.new(minx, miny, minz), Vector3.new(maxx, maxy, maxz)
 	return Region3.new(minv, maxv)
 end
@@ -200,6 +203,35 @@ function Enemy:ServicePrep()
 	}
 end
 
+function Enemy:WeaponDrop()
+	local Drops = Drops:GetChildren()
+		local Root = self.Instance.PrimaryPart
+		local SwordDrop = Drops[math.random(1, #Drops)]:Clone()
+
+		local raycastParams = RaycastParams.new()
+		raycastParams.FilterType = Enum.RaycastFilterType.Blacklist
+		raycastParams.FilterDescendantsInstances = {workspace.Enemies:GetDescendants(), self.Instance}
+		raycastParams.IgnoreWater = true
+
+		local raycastResult = workspace:Raycast(
+			Root.Position,
+			CFrame.new(Root.Position + Vector3.new(0,5,0), Root.Position - Vector3.new(0,20,0)).LookVector * 30,
+			raycastParams
+		)
+
+		if raycastResult then
+			SwordDrop.CFrame = (
+				CFrame.new(raycastResult.Position) *
+				CFrame.new(0, SwordDrop.Size.Y / 2, 0) *
+				CFrame.fromEulerAnglesXYZ(math.pi, 0, 0)
+			)
+		else
+			SwordDrop.CFrame = Root.CFrame * CFrame.fromEulerAnglesXYZ(math.pi, 0, 0)
+		end
+
+		SwordDrop.Parent = workspace.Ignorable
+end
+
 function Enemy:Start()
 	local Type = self.Instance:GetAttribute('Type')
     self.Humanoid = self.Instance.Humanoid
@@ -221,6 +253,10 @@ function Enemy:Start()
 	end)
 
 	self.Humanoid.Died:Connect(function()
+		local chance = math.rad(1, 5)
+		if chance == 1 then
+			self:WeaponDrop()
+		end
 		task.wait(6.1)
 		self:Died()
 	end)

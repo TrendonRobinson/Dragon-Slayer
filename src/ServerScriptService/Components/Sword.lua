@@ -9,7 +9,6 @@ local Tween = require(Knit.Modules.Tween)
 
 
 --// Knit Services
-print(Knit)
 
 --// Component
 local Tag = "Sword"

@@ -54,6 +54,10 @@ Players.PlayerAdded:Connect(function(Player)
 
     local Profile = Profiles[Player]
     Profile:Init()
+
+    local Character = Player.Character or Player.CharacterAdded:Wait()
+    Profile:EquipSword(Profile.profile.Data.equiped)
+
 end)
 
 --// Knit Start&Init

@@ -16,7 +16,12 @@ local ProfileTemplate = {
 
     coins = 0,
 
-    inventory = {},
+    inventory = {
+        Default = 1
+    },
+
+    equiped = 'Default',
+
 
     strength = 1,
     speed = 1,
@@ -103,6 +108,7 @@ function PlayerManager:MonitorCharacter()
 
     self.Player.CharacterAdded:Connect(function()
         self:MonitorCharacter()
+        self:EquipSword(self.profile.Data.equiped)
     end)
 end
 function PlayerManager:AddWeaponToInventory(weaponName)
@@ -111,12 +117,11 @@ function PlayerManager:AddWeaponToInventory(weaponName)
     else
         self.profile.Data.inventory[weaponName] = 1
     end
-    print(weaponName)
 end
 
 function PlayerManager:EquipSword(weaponName)
     if not ReplicatedStorage.Assets.Swords.Weapon:FindFirstChild(weaponName) then
-        error('Weapon name does not exist in weapon database')
+        error('"'..weaponName..'" does not exist in weapon database')
     elseif not self.profile.Data.inventory[weaponName] then
         error('Player does not own weapon')
     end
@@ -133,10 +138,11 @@ function PlayerManager:EquipSword(weaponName)
     local Weld = Instance.new('Weld')
     Weld.Part0 = SwordClone
     Weld.Part1 = RightHand
-    Weld.C0 = CFrame.new(PivotOffset.X, PivotOffset.Y, PivotOffset.Z) * CFrame.fromEulerAnglesXYZ(math.pi/2, 0, 0)
+    Weld.C0 = PivotOffset--CFrame.new(PivotOffset.X, PivotOffset.Y, PivotOffset.Z) * CFrame.fromEulerAnglesXYZ(PivotOffset.X, 0, 0)
     Weld.Parent = RightHand
     
     SwordClone.Parent = Character
+    self.profile.Data.equiped = weaponName
 end
 --INVENTORY------------------------------------------------------------------------------------
 
