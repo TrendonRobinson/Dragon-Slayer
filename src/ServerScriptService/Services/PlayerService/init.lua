@@ -15,7 +15,7 @@ Client.onAttack = Knit.CreateSignal()
 Client.constructHitbox = Knit.CreateSignal()
 
 --// Client Methods
-function PlayerService.Client:GetTest(player)
+function PlayerService:GetTest(player)
 	
 end
 

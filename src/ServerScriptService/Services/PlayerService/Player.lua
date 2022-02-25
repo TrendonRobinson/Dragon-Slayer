@@ -3,17 +3,20 @@ local Players = game:GetService('Players')
 local ServerScriptService = game:GetService("ServerScriptService")
 
 --// Modules
+local Knit = require(game:GetService("ReplicatedStorage").Packages.Knit)
 local ProfileService = require(script.Parent.ProfileService)
 local RaycastHitbox = require(ServerScriptService.Modules.RaycastHitboxV4)
 
 --// Variables
 local ProfileTemplate = {
     --// Stats
-    lvl = 0,
+    lvl = 1,
     xp = 0,
 
-    strength = 0,
-    speed = 0,
+    coins = 0,
+
+    strength = 1,
+    speed = 1,
 }
 
 local ProfileStore = ProfileService.GetProfileStore(
@@ -37,6 +40,8 @@ function PlayerManager.new(_Player)
     return self
 end
 
+
+--HITBOX------------------------------------------------------------------------------------
 function PlayerManager:HitboxManager()
 
     local Params = RaycastParams.new()
@@ -44,9 +49,19 @@ function PlayerManager:HitboxManager()
     Params.FilterType = Enum.RaycastFilterType.Blacklist
 
     self.Hitbox.RaycastParams = Params
-
     self.Hitbox.OnHit:Connect(function(hit, humanoid)
-        humanoid:TakeDamage(20)
+        if humanoid.Health < 1 then return end
+
+        local Gold = humanoid.Parent:GetAttribute('Gold')
+        local Type = humanoid.Parent:GetAttribute('Type')
+        local Level = humanoid.Parent:GetAttribute('Level')
+
+        humanoid:TakeDamage(self.profile.Data.strength * 10)
+        
+        if humanoid.Health < 1 then
+            self:IncrementCoins(Gold)
+            self:IncrementXP(Level * 100 * .25)
+        end
     end)
 end
 function PlayerManager:ConstructHitbox()
@@ -63,10 +78,29 @@ function PlayerManager:ToggleHitbox(on)
         self.Hitbox:HitStop()
     end
 end
+--HITBOX------------------------------------------------------------------------------------
 
+--DATA INCREMENT------------------------------------------------------------------------------------
+function PlayerManager:IncrementCoins(amount)
+    if amount then
+        self.profile.Data['coins'] += amount
+    else
+        warn('PlayerManagerService: PlayerManager:IncrementCoins(amount) -> amount is nil')
+    end
+end
+
+function PlayerManager:IncrementLevel()
+
+end
+
+function PlayerManager:IncrementXP(amount)
+    self.profile.Data['xp'] += amount
+end
+--DATA INCREMENT------------------------------------------------------------------------------------
 function PlayerManager:Init()
 
-    local profile = ProfileStore:LoadProfileAsync("Player_" .. self.Player.UserId)
+    --Player__572995537
+    local profile = ProfileStore:LoadProfileAsync("Player__" .. self.Player.UserId)
     if profile ~= nil then
         profile:AddUserId(self.Player.UserId) -- GDPR compliance
         profile:Reconcile() -- Fill in missing variables from ProfileTemplate (optional)

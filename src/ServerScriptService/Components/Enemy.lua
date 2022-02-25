@@ -9,7 +9,6 @@ local Trove = require(ReplicatedStorage.Packages.Trove)
 
 
 --// Knit Services
-print(Knit)
 
 --// Component
 local Tag = "Enemy"
@@ -196,6 +195,13 @@ function Enemy:Died()
 	self:Stop()
 end
 
+function Enemy:ServicePrep()
+	self.Services = {
+		PlayerManagerService = Knit.GetService('PlayerManagerService')
+	}
+	print(self.Services.PlayerManagerService)
+end
+
 function Enemy:Start()
 	local Type = self.Instance:GetAttribute('Type')
     self.Humanoid = self.Instance.Humanoid
@@ -206,8 +212,15 @@ function Enemy:Start()
 	self.ATTACK_DAMAGE = self.Instance:GetAttribute('Level') * 10
 	self.ATTACK_STAND_TIME = 1
 	self.ATTACK_RADIUS = 25
+	self.HEALTH = self.Instance:GetAttribute('Level')
 
 	self.attacking = false
+	self.Humanoid.MaxHealth = self.HEALTH
+	self.Humanoid.Health = self.HEALTH
+	
+	task.spawn(function()
+		self:ServicePrep()
+	end)
 
 	self.Humanoid.Died:Connect(function()
 		task.wait(6.1)
