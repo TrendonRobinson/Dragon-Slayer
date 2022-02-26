@@ -14,7 +14,6 @@ local ProfileTemplate = {
     lvl = 1,
     xp = 0,
 
-<<<<<<< HEAD
     coins = 0,
 
     inventory = {
@@ -24,8 +23,6 @@ local ProfileTemplate = {
     equiped = 'Default',
 
 
-=======
->>>>>>> 6887c98e3ea953328f8ec7f65d75d789f6e2ca4e
     strength = 1,
     speed = 1,
 }
@@ -61,7 +58,6 @@ function PlayerManager:HitboxManager()
 
     self.Hitbox.RaycastParams = Params
     self.Hitbox.OnHit:Connect(function(hit, humanoid)
-<<<<<<< HEAD
         if humanoid.Health < 1 then return end
 
         local Gold = humanoid.Parent:GetAttribute('Gold')
@@ -76,21 +72,15 @@ function PlayerManager:HitboxManager()
             self:IncrementXP(Level * 100 * .25)
             if Type == 'DragonBoss' then self:TriggerDropChance() end
         end
-=======
-        humanoid:TakeDamage(200)
->>>>>>> 6887c98e3ea953328f8ec7f65d75d789f6e2ca4e
     end)
 end
 function PlayerManager:ConstructHitbox()
     self.Character = self.Player.Character or self.Player.CharacterAdded:Wait()
-<<<<<<< HEAD
 
     if not self.Character:FindFirstChild('Sword') then
         self:EquipSword(self.profile.Data.equiped)
     end
 
-=======
->>>>>>> 6887c98e3ea953328f8ec7f65d75d789f6e2ca4e
     self.Character.Humanoid.WalkSpeed = 50
     self.Sword = self.Character:WaitForChild('Sword')
     self.Hitbox = RaycastHitbox.new(self.Sword)
