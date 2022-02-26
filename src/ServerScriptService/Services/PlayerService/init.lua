@@ -71,8 +71,10 @@ function PlayerService:ConcludeGame(player, weaponName)
     local CurrentLevelIndex
     local TeleportTo
 
-    for i, Level in pairs(LevelTable) do
-        CurrentLevelIndex = i
+    for i, Level in ipairs(LevelTable) do
+        if CurrentLevel == Level then
+            CurrentLevelIndex = i
+        end
     end
 
     TeleportTo = LevelTable[CurrentLevelIndex + 1] or LevelTable[1]
